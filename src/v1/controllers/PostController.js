@@ -23,12 +23,12 @@ const createPost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-    let updatedNews = POST_SERVICE.updatePost(req);
+    let updatedPost = await POST_SERVICE.updatePost(req);
     res.send("Updating a news item");
 };
 
 const deletePost = async (req, res) => {
-    let deletedNews = POST_SERVICE.deletePost(req);
+    let deletedPost = await POST_SERVICE.deletePost(req);
     res.send("Delete an existing news item");
 };
 
