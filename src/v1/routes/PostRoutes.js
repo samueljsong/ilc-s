@@ -1,5 +1,13 @@
 /**
- * This file acts as the routing system for the API
+ * @file PostRoutes.js
+ * @description This file defines the routing layer for news feed operations.
+ * It connects HTTP endpoints to their corresponding controller functions in the NewsFeedController.
+ *
+ * @requires express - The Express library for creating and handling routes.
+ * @requires ../controllers/NewsFeedController - Contains route handlers that call the NewsFeedService for business logic.
+ *
+ * @author Samuel Song
+ * @copyright 2024
  */
 
 const express = require("express");

@@ -43,7 +43,7 @@ const createPost = async (data) => {
  * @returns {Promise<Array>} Resolves with an array of post objects, each containing `title`, `body`, and `date`.
  * @throws Will log an error if the database query fails.
  */
-const getAllPosts = async (data) => {
+const getAllPosts = async () => {
     const sql = `
         SELECT post_id, title, body, date
         FROM post

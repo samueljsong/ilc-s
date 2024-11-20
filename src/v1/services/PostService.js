@@ -1,5 +1,9 @@
 /**
- * This File is used to house the logic of the API functions.
+ * @file NewsFeedService.js
+ * @description This file defines handles the business logic for the post operation.
+ *
+ * @author Samuel Song
+ * @copyright 2024
  */
 
 const DF = require("../../utils/dateTimeFormatter");
