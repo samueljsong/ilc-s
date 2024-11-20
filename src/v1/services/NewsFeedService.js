@@ -1,5 +1,9 @@
 /**
- * This File is used to house the logic of the API functions.
+ * @file NewsFeedService.js
+ * @description This file defines handles the business logic for the news feed operation.
+ *
+ * @author Samuel Song
+ * @copyright 2024
  */
 
 const DB_NEWS_QUERY = require("../database/newsQueries");

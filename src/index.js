@@ -18,6 +18,12 @@ const saltRounds = 12;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const corsOption = {
+    origin: "*",
+    credentials: true,
+    optionSuccessStatus: 200,
+};
+
 const connectMongoDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL);
@@ -49,13 +55,6 @@ app.use(
     })
 );
 
-const corsOption = {
-    origin: "*",
-    credentials: true,
-    optionSuccessStatus: 200,
-};
-
-//Middleware
 app.use("/api/v1/news", v1NewsFeedRouter);
 app.use(cors(corsOption));
 
