@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config();
 
 //Routers
-const v1NewsFeedRouter = require("./v1/routes/NewsFeedRoutes");
+const V1_POST_ROUTER = require("./v1/routes/PostRoutes");
 
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -12,13 +12,13 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 
-const expireTime = 60 * 60 * 1000;
-const saltRounds = 12;
+const EXPIRE_TIME = 60 * 60 * 1000;
+const SALT_ROUNDS = 12;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const corsOption = {
+const CORS_OPTION = {
     origin: "*",
     credentials: true,
     optionSuccessStatus: 200,
@@ -49,14 +49,15 @@ app.use(
         saveUninitialized: false,
         resave: true,
         cookie: {
-            maxAge: expireTime,
+            maxAge: EXPIRE_TIME,
             secure: true,
         },
     })
 );
 
-app.use("/api/v1/news", v1NewsFeedRouter);
-app.use(cors(corsOption));
+//Middleware
+app.use("/api/v1/post", V1_POST_ROUTER);
+app.use(cors(CORS_OPTION));
 
 connectMongoDB().then(() => {
     app.listen(PORT, () => {
