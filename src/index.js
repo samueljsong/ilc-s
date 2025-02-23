@@ -3,6 +3,7 @@ require("dotenv").config();
 
 //Routers
 const V1_POST_ROUTER = require("./v1/routes/PostRoutes");
+const V1_VIDEO_ROUTER = require("./v1/routes/VideoRoutes");
 
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -38,6 +39,8 @@ const connectMongoDB = async () => {
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors(CORS_OPTION)); //has to be done before the app.use session
+
 app.use(
     session({
         secret: process.env.NODE_SECRET_SESSION,
@@ -55,9 +58,10 @@ app.use(
     })
 );
 
+// app.options("*", cors(CORS_OPTION));
 //Middleware
 app.use("/api/v1/post", V1_POST_ROUTER);
-app.use(cors(CORS_OPTION));
+app.use("/api/v1/video", V1_VIDEO_ROUTER);
 
 connectMongoDB().then(() => {
     app.listen(PORT, () => {
