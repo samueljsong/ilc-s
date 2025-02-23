@@ -25,10 +25,10 @@ const getAllVideos = async () => {
 
 const createVideo = async (req) => {
     const data = req.body;
+    const videoId = extractVideoId(data.link);
+    data.video_id = videoId;
 
-    const thumbnailUrl = `https://img.youtube.com/vi/${extractVideoId(
-        data.link
-    )}/hqdefault.jpg`;
+    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
     data.thumbnail = thumbnailUrl;
 
     const now = new Date();

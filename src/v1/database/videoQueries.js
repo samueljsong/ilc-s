@@ -1,8 +1,8 @@
 const DB = require("./databaseConnection");
 
 const createVideo = async (data) => {
-    const SQL = `INSERT INTO video (type, date, title, description, link, createdDate, thumbnail)
-        VALUES (?, ?, ?, ?, ?, ?, ?);`;
+    const SQL = `INSERT INTO video (video_id, type, date, title, description, link, createdDate, thumbnail)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
 
     try {
         return await DB.query(SQL, Object.values(data));
