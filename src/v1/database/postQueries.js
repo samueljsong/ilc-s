@@ -20,18 +20,51 @@ const DB = require("./databaseConnection");
  * @returns {Promise<void>} Resolves when the post is successfully created.
  * @throws Will log an error if the database query fails.
  */
-const createPost = async (data) => {
+const createRecurringPost = async (data) => {
     const SQL = `
-        INSERT INTO post
-        (title, body, date)
+        INSERT INTO recurringEvent
+        (title, description, image_url, eventType, createdDate, recurringDetail)
         VALUES
-        (?, ?, ?);
+        (?, ?, ?, ?, ?, ?);
     `;
 
     try {
-        await DB.query(SQL, data);
+        const result = {
+            status: 200,
+            message: "Recurring post has been created successfully!",
+        };
+        await DB.query(SQL, Object.values(data));
+        return result;
     } catch (err) {
-        console.log(err);
+        const result = {
+            status: 500,
+            message: "Recurring post creation failed!",
+        };
+        return result;
+    }
+};
+
+const createPost = async (data) => {
+    const SQL = `
+        INSERT INTO event
+        (title, description, image_url, eventType, createdDate, expirationDate)
+        VALUES
+        (?, ?, ?, ?, ?, ?);
+    `;
+
+    try {
+        const result = {
+            status: 200,
+            message: "Post has been created successfully!",
+        };
+        await DB.query(SQL, Object.values(data));
+        return result;
+    } catch (err) {
+        const result = {
+            status: 500,
+            message: "Post creation failed!",
+        };
+        return result;
     }
 };
 
@@ -45,38 +78,28 @@ const createPost = async (data) => {
  */
 const getAllPosts = async () => {
     const sql = `
-        SELECT post_id, title, body, date
-        FROM post
-        ORDER BY date DESC;
+        SELECT * FROM event
+        ORDER BY expirationDate DESC;
     `;
 
     try {
-        return await DB.query(sql);
+        const res = await DB.query(sql);
+        return res[0];
     } catch (err) {
         console.log(err);
     }
 };
 
-/**
- * Retrieves a specific post by its ID from the `post` table.
- *
- * @function getPost
- * @async
- * @param {Object} data - An object containing the `post_id` for identifying the post.
- * @param {string} data.post_id - The unique identifier for the post to retrieve.
- * @returns {Promise<Object>} Resolves with a post object containing `post_id`, `title`, `body`, and `date`.
- * @throws Will log an error if the database query fails.
- */
-const getPost = async (data) => {
-    const SQL = `
-        SELECT post_id, title, body, date
-        FROM post
-        WHERE post_id = (?);
+const getAllRecurringPosts = async () => {
+    const sql = `
+        SELECT * FROM recurringEvent
+        ORDER BY createdDate DESC;
     `;
 
     try {
-        return await DB.query(SQL, data);
-    } catch (err) {
+        const res = await DB.query(sql);
+        return res[0];
+    } catch {
         console.log(err);
     }
 };
@@ -132,7 +155,8 @@ const updatePost = async (data) => {
 module.exports = {
     createPost,
     getAllPosts,
+    getAllRecurringPosts,
     deletePost,
-    getPost,
     updatePost,
+    createRecurringPost,
 };

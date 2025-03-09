@@ -5,9 +5,18 @@ const createVideo = async (data) => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
 
     try {
-        return await DB.query(SQL, Object.values(data));
+        const result = {
+            status: 200,
+            message: "Video has been created successfully!",
+        };
+        await DB.query(SQL, Object.values(data));
+        return result;
     } catch (err) {
-        console.log(err);
+        const result = {
+            status: 500,
+            message: "Video creation failed!",
+        };
+        return result;
     }
 };
 

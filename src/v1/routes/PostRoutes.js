@@ -19,7 +19,7 @@ const POST_CONTROLLER = require("../controllers/PostController");
  */
 router.get("/", POST_CONTROLLER.getAllPosts);
 
-router.get("/:postId", POST_CONTROLLER.getPost);
+router.get("/recurring", POST_CONTROLLER.getAllRecurringPosts);
 
 router.post("/", POST_CONTROLLER.createPost);
 

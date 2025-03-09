@@ -6,7 +6,8 @@ const getAllVideos = async (req, res) => {
 };
 
 const createVideo = async (req, res) => {
-    VIDEO_SERVICE.createVideo(req);
+    let result = await VIDEO_SERVICE.createVideo(req);
+    res.status(result.status).json(result);
 };
 
 module.exports = {

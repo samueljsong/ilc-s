@@ -17,21 +17,13 @@ const POST_SERVICE = require("../services/PostService");
  * @param {Object} res
  */
 const getAllPosts = async (req, res) => {
-    let allPosts = await POST_SERVICE.getAllPosts();
-
-    res.json({
-        allPosts: allPosts,
-    });
+    let result = await POST_SERVICE.getAllPosts();
+    res.json(result);
 };
 
-/**
- * Retrieves and returns a specific post item by ID in JSON format.
- * @param {Object} req
- * @param {Object} res
- */
-const getPost = async (req, res) => {
-    let newsItem = POST_SERVICE.getOnePost(req);
-    res.send("Get an existing news item");
+const getAllRecurringPosts = async (req, res) => {
+    let result = await POST_SERVICE.getAllRecurringPosts();
+    res.json(result);
 };
 
 /**
@@ -41,7 +33,7 @@ const getPost = async (req, res) => {
  */
 const createPost = async (req, res) => {
     let result = await POST_SERVICE.createPost(req);
-    res.send("Creating a news item");
+    res.status(result.status).json(result);
 };
 
 /**
@@ -66,7 +58,7 @@ const deletePost = async (req, res) => {
 
 module.exports = {
     getAllPosts,
-    getPost,
+    getAllRecurringPosts,
     createPost,
     updatePost,
     deletePost,

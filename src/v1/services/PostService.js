@@ -8,24 +8,39 @@
 
 const DF = require("../../utils/dateTimeFormatter");
 const DB = require("../database/postQueries");
+const { post } = require("../routes/PostRoutes");
+
+const dateOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "America/Vancouver", // Use Canada BC timezone
+};
 
 /**
  * Retrieves all posts from the database.
  * @returns {Promise<Array>} List of all posts.
  */
 const getAllPosts = async () => {
-    let allPosts = await DB.getAllPosts();
-    return allPosts[0];
+    let results = await DB.getAllPosts();
+
+    results = results.filter((post) => {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return post.expirationDate >= today;
+    });
+
+    return results;
 };
 
-/**
- * Retrieves a specific post by its ID.
- * @param {Object} req - The request object containing the post ID.
- * @returns {Promise<Object>} The requested post.
- */
-const getOnePost = async (req) => {
-    let data = [req.params.postId];
-    return await DB.getPost(data);
+const getAllRecurringPosts = async () => {
+    let results = await DB.getAllRecurringPosts();
+    return results;
 };
 
 /**
@@ -34,11 +49,33 @@ const getOnePost = async (req) => {
  * @returns {Promise<void>} Resolves after the post is created.
  */
 const createPost = async (req) => {
-    let formattedDate = DF.getDateTime();
-    let title = req.body.title;
-    let body = req.body.body;
+    const now = new Date();
+    const formattedDateTime = new Intl.DateTimeFormat("en-CA", dateOptions)
+        .format(now)
+        .replace(",", ""); // Remove comma for SQL format
 
-    let data = [title, body, formattedDate];
+    const recurringData = {
+        title: req.body.title,
+        description: req.body.description,
+        image_url: req.body.thumbnail,
+        eventType: req.body.type,
+        createdDate: new Date(formattedDateTime),
+        recurringDetail: req.body.recurringDetails,
+    };
+
+    if (req.body.type === "recurring") {
+        let result = await DB.createRecurringPost(recurringData);
+        return result;
+    }
+
+    const data = {
+        title: req.body.title,
+        description: req.body.description,
+        image_url: req.body.thumbnail,
+        eventType: req.body.type,
+        createdDate: new Date(formattedDateTime),
+        expirationDate: req.body.date,
+    };
 
     let result = await DB.createPost(data);
     return result;
@@ -72,8 +109,8 @@ const deletePost = async (req) => {
 };
 
 module.exports = {
+    getAllRecurringPosts,
     getAllPosts,
-    getOnePost,
     createPost,
     updatePost,
     deletePost,

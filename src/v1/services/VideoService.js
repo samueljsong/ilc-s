@@ -37,7 +37,8 @@ const createVideo = async (req) => {
         .replace(",", ""); // Remove comma for SQL format
     data.createdDate = new Date(formattedDateTime);
 
-    await DB.createVideo(data);
+    const result = await DB.createVideo(data);
+    return result;
 };
 
 module.exports = {
