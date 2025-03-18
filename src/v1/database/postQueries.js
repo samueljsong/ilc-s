@@ -79,7 +79,7 @@ const createPost = async (data) => {
 const getAllPosts = async () => {
     const sql = `
         SELECT * FROM event
-        ORDER BY expirationDate DESC;
+        ORDER BY expirationDate ASC;
     `;
 
     try {
