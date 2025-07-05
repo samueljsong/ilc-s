@@ -1,11 +1,3 @@
-/**
- * @file NewsFeedService.js
- * @description This file defines handles the business logic for the post operation.
- *
- * @author Samuel Song
- * @copyright 2024
- */
-
 const DF = require("../../utils/dateTimeFormatter");
 const DB = require("../database/postQueries");
 const { post } = require("../routes/PostRoutes");
@@ -21,71 +13,56 @@ const dateOptions = {
     timeZone: "America/Vancouver", // Use Canada BC timezone
 };
 
-/**
- * Retrieves all posts from the database.
- * @returns {Promise<Array>} List of all posts.
- */
 const getAllPosts = async () => {
-    let results = await DB.getAllPosts();
-
-    results = results.filter((post) => {
-        let today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        return post.expirationDate >= today;
-    });
-
-    return results;
+    return await DB.getAllPosts();
 };
 
 const getAllRecurringPosts = async () => {
-    let results = await DB.getAllRecurringPosts();
-    return results;
+    return await DB.getAllRecurringPosts();
 };
 
-/**
- * Creates a new post in the database.
- * @param {Object} req - The request object containing the title and body.
- * @returns {Promise<void>} Resolves after the post is created.
- */
 const createPost = async (req) => {
     const now = new Date();
     const formattedDateTime = new Intl.DateTimeFormat("en-CA", dateOptions)
         .format(now)
         .replace(",", ""); // Remove comma for SQL format
 
-    const recurringData = {
-        title: req.body.title,
-        description: req.body.description,
-        image_url: req.body.thumbnail,
-        eventType: req.body.type,
-        createdDate: new Date(formattedDateTime),
-        recurringDetail: req.body.recurringDetails,
-    };
+    console.log(req.body);
 
     if (req.body.type === "recurring") {
-        let result = await DB.createRecurringPost(recurringData);
-        return result;
+        let recurringData = {
+            title: req.body.title,
+            description: req.body.description,
+            image_url: req.body.image_url,
+            event_type: req.body.event_type,
+            created_date: new Date(formattedDateTime),
+            recurring_detail: req.body.recurring_detail,
+        };
+
+        let result =  await DB.createRecurringPost(recurringData);
+        let message = (result === 400)
+            ? "There was an error in creating recurring event"
+            : "Successfully created a recurring event";
+        return {status: result, message: message};
     }
+    else {
+        const data = {
+            title: req.body.title,
+            description: req.body.description,
+            image_url: req.body.image_url,
+            event_type: req.body.event_type,
+            created_date: new Date(formattedDateTime)
+        };
 
-    const data = {
-        title: req.body.title,
-        description: req.body.description,
-        image_url: req.body.thumbnail,
-        eventType: req.body.type,
-        createdDate: new Date(formattedDateTime),
-        expirationDate: req.body.date,
-    };
+        let result = await DB.createPost(data);
+        let message = (result === 400)
+            ? "There was an error in creating Post"
+            : "Successfully created a post"
 
-    let result = await DB.createPost(data);
-    return result;
+        return {status: result, message: message};
+    }
 };
 
-/**
- * Updates an existing post in the database.
- * @param {Object} req - The request object containing the updated title, body, and post ID.
- * @returns {Promise<void>} Resolves after the post is updated.
- */
 const updatePost = async (req) => {
     let title = req.body.title;
     let body = req.body.body;
@@ -96,16 +73,13 @@ const updatePost = async (req) => {
     return;
 };
 
-/**
- * Deletes a post by its ID.
- * @param {Object} req - The request object containing the post ID.
- * @returns {Promise<void>} Resolves after the post is deleted.
- */
 const deletePost = async (req) => {
-    let data = [req.params.postId];
-    let result = await DB.deletePost(data);
-    console.log(result);
-    return;
+    let result = await DB.deletePost(req.params.postId);
+    let message = (result === 400)
+        ? "There was an error in deleting the Post"
+        : "Successfully deleted a post";
+
+    return {status: result, message: message};
 };
 
 module.exports = {

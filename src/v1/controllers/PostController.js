@@ -33,7 +33,7 @@ const getAllRecurringPosts = async (req, res) => {
  */
 const createPost = async (req, res) => {
     let result = await POST_SERVICE.createPost(req);
-    res.status(result.status).json(result);
+    res.status(result.status).json(result.message);
 };
 
 /**
@@ -52,8 +52,8 @@ const updatePost = async (req, res) => {
  * @param {Object} res
  */
 const deletePost = async (req, res) => {
-    let deletedPost = await POST_SERVICE.deletePost(req);
-    res.send("Delete an existing news item");
+    let result = await POST_SERVICE.deletePost(req);
+    res.status(result.status).json(result.message);
 };
 
 module.exports = {

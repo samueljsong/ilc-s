@@ -12,6 +12,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
+const test = require("node:test");
 
 const EXPIRE_TIME = 60 * 60 * 1000;
 const SALT_ROUNDS = 12;

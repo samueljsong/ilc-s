@@ -25,20 +25,23 @@ const getAllVideos = async () => {
 
 const createVideo = async (req) => {
     const data = req.body;
-    const videoId = extractVideoId(data.link);
-    data.video_id = videoId;
+    const video_id = extractVideoId(data.link);
+    data.video_id = video_id;
 
-    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-    data.thumbnail = thumbnailUrl;
+    data.thumbnail = `https://img.youtube.com/vi/${video_id}/hqdefault.jpg`;
 
     const now = new Date();
     const formattedDateTime = new Intl.DateTimeFormat("en-CA", dateOptions)
         .format(now)
         .replace(",", ""); // Remove comma for SQL format
-    data.createdDate = new Date(formattedDateTime);
+    data.created_date = new Date(formattedDateTime);
 
-    const result = await DB.createVideo(data);
-    return result;
+    let result = await DB.createVideo(data);
+    let message = (result === 400)
+        ? "There was an error in creating a video"
+        : "Successfully created video";
+
+    return {status: result, message : message};
 };
 
 module.exports = {
