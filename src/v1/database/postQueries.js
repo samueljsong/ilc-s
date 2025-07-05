@@ -27,9 +27,13 @@ const createPost = async (eventData) => {
 };
 
 const getAllPosts = async () => {
+    const today = new Date().toISOString();
+
     const { data, error } = await SUPABASE
         .from('event')
-        .select('*');
+        .select('*')
+        .gt('created_date', today)
+        .order('created_date', {ascending: false});
 
     if (error) {
         console.log(error.message);

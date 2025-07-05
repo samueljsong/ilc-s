@@ -16,7 +16,8 @@ const createVideo = async (videoData) => {
 const getAllVideos = async () => {
     const { data, error } = await SUPABASE
         .from('video')
-        .select('*');
+        .select('*')
+        .order('date', {ascending: false});
 
     if (error) console.log(error);
 

@@ -51,7 +51,7 @@ const createPost = async (req) => {
             description: req.body.description,
             image_url: req.body.image_url,
             event_type: req.body.event_type,
-            created_date: new Date(formattedDateTime)
+            created_date: req.body.date
         };
 
         let result = await DB.createPost(data);
